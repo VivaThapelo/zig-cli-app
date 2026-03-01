@@ -1,0 +1,48 @@
+const std = @import("std");
+const cli = @import("cli.zig");
+
+pub const methods = struct {
+    pub const commands = struct {
+        // handler for "hello" command
+        pub fn helloFn(_options: []cli.option) bool {
+            std.debug.print("Hello, ", .{});
+
+            // looking for a name option
+            for(_options) |opt| {
+                if(std.mem.eql(u8, opt.name, "name")) {
+                    if(opt.value.len > 0) {
+                        std.debug.print("{s}", .{opt.value});
+                    } else {
+                        std.debug.print("World", .{});
+                    }
+                    break;
+                }
+            }
+
+            std.debug.print("!\n", .{});
+            return true;
+        }
+
+        pub fn helpFn(_: []const cli.option) bool {
+                std.debug.print(
+                "Usage: my-cli <command> [options]\n" ++
+                "Commands:\n" ++
+                "  hello    Greet someone\n" ++
+                "  help     Show this help message\n" ++
+                "" ++
+                "Options for hello:\n" ++
+                "  -n, --name <value>    Name to greet\n"
+                , .{}
+            );
+            return true;
+        }
+    };
+
+    pub const options = struct {
+        // Handler for the "name" option
+        pub fn nameFn(_: []const u8) bool {
+            // Option-specific logic could go here
+            return true;
+        }
+    };
+};
